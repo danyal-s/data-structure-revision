@@ -10,6 +10,7 @@ class Node:
 class Trie:
     def __init__(self):
         self.head = Node("*")
+        self.output = []
 
 
     def insert(self, word):
@@ -20,53 +21,24 @@ class Trie:
             
             cur_node = cur_node.children[c]
 
-    
-    def _get_word_node_branch(self, word):
-        if len(word) == 0:
-            char = "$"
-        else:
-            char = word[0]
-        
-        char_node = Node(char)
-        
-        if len(word) > 0:
-            next_char_node = self.get_word_node_branch(word[1:])
-            char_node.children[next_char_node.value] = next_char_node
-        
-        return char_node
-
 
     def search(self, word):
         cur_node = self.head
-        return self._search_full(cur_node, word, "")
-
-
-    def _search_full(self, cur_node: Node, word, traversed_word):
-        if len(word) == 0:
-            return self._get_prefix_words(cur_node, traversed_word)
-       
-        else:
-            if word[0] in cur_node.children.keys():
-                chosen_child = cur_node.children[word[0]]
-                traversed_word += word[0]
-                matching_words = self._search_full(chosen_child, word[1:], traversed_word)
-                return matching_words
+        for c in word:
+            if c in cur_node.children.keys():
+                cur_node = cur_node.children[c]
             else:
                 return []
+        self.dfs(cur_node, word)
+        return self.output
 
 
-    def _get_prefix_words(self, cur_node: Node, traversed_word):
-        words_found = []
-        if len(cur_node.children) > 0:
-                for child in cur_node.children.values():
-                    traversed_word += child.value
-                    words_found += self._get_prefix_words(child, traversed_word)
-                return words_found
-        else:
-            if cur_node.value == "$":
-                return [traversed_word[:-1]]
-            else:
-                return [None]
+    def dfs(self, node, word):
+        for child in node.children.values():
+            self.dfs(child, word + child.value)
+            if child.value == "$":
+                self.output.append(word)
+
 
 def test():
     t = Trie()        
