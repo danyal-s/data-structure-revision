@@ -20,11 +20,11 @@ class LinkedList:
             new_node.next = self.head
             self.head = new_node
             
-            if self.triple_check(new_node):
+            if self.has_triple(new_node):
                 new_node.triple_next = new_node.next.next.next
 
 
-    def triple_check(self, node):
+    def has_triple(self, node):
         is_triple = True
         for _ in range(0, 3):
             if node.next is None:
@@ -51,7 +51,7 @@ class LinkedList:
             nodes_to_modify[-1].next = nodes_to_modify[-1].next.next
 
             for x in list(reversed(nodes_to_modify))[1:]:
-                x.triple_next = x.next.next.next if self.triple_check(x) else None
+                x.triple_next = x.next.next.next if self.has_triple(x) else None
         
     
     def __iter__(self):
